@@ -78,3 +78,84 @@ STOCKSENSE/
 - All monetary values are in INR (₹).
 - Inventory flows follow: `Closing Stock = Opening Stock + Received Quantity - Units Sold`.
 - The dataset intentionally includes a cold-start item (`P999`) to simulate sparse history challenges in Machine Learning.
+
+---
+
+## Round 2: Feature Engineering & Machine Learning
+
+**Person 2 (ML Engineer)**
+
+### Features Created
+
+| Category | Features |
+|---|---|
+| Time | `day_of_week`, `weekend_flag`, `month`, `week_no`, `festival_flag`, `holiday_or_festival` |
+| Lag | `lag_1`, `lag_7`, `lag_14`, `lag_closing_1`, `lag_closing_7` |
+| Rolling | `rolling_mean_7`, `rolling_mean_14`, `rolling_std_7` |
+| Inventory | `days_of_inventory`, `inventory_to_demand_ratio`, `reorder_gap`, `stock_coverage_ratio` |
+| Price/Promo | `discount_pct`, `price_change`, `mrp_to_cost_ratio`, `promotion_flag`, `promo_weekend` |
+| Store/Product | `store_type_enc`, `category_enc`, `brand_enc`, `region_enc`, `store_id_enc`, `product_id_enc`, `is_cold_start` |
+
+All lag and rolling features are computed within each (store_id, product_id) group sorted by date. No future data is used.
+
+### Demand Target Definition
+
+`next_7_day_demand(t)` = sum of `units_sold` for days t+1 through t+7 per (store_id, product_id). Rows with incomplete 7-day future window are excluded from training.
+
+### Stock-out Target Definition
+
+`stockout_flag = 1` if `closing < reorder_lvl`, else `0`. Represents end-of-day stock falling below the replenishment threshold — operationally equivalent to stock-out risk.
+
+### Temporal Split (No Random Shuffling)
+
+| Split | Dates |
+|---|---|
+| Train | 2026-05-01 to 2026-07-25 |
+| Validation | 2026-07-26 to 2026-08-12 |
+| Test | 2026-08-13 onwards |
+
+### Models Tested
+
+**Demand Forecasting**: Baseline (rolling mean), Linear Regression, Random Forest (selected), XGBoost
+
+**Stock-out Classification**: Logistic Regression, Decision Tree, Random Forest, XGBoost (selected)
+
+### Test Performance
+
+| Task | Model | Key Metrics |
+|---|---|---|
+| Demand | RandomForest | MAE=51.87, RMSE=89.84, MAPE=12.48%, R2=0.947 |
+| Stockout | XGBoost | Acc=90.1%, Recall=72.8%, F1=69.8%, AUC=0.950 |
+
+### Leakage Prevention
+
+- Lag/rolling features use only historical rows (shift >= 1)
+- next_7_day_demand never used as a predictor
+- Inventory-derived features that encode the target excluded from the stockout model
+- Temporal split: strictly by date, no random shuffle
+
+### Saved Model Locations
+
+- `models/demand_model.pkl` + `models/demand_scaler.pkl`
+- `models/stockout_model.pkl` + `models/stockout_scaler.pkl`
+
+### How to Reproduce Round 2
+
+```bash
+python src/train_models.py
+```
+
+### Round 2 Outputs
+
+- `data/processed/ml_features.csv` — engineered feature matrix
+- `data/processed/demand_predictions.csv` — test-set demand forecasts
+- `data/processed/stockout_predictions.csv` — test-set stockout probabilities
+- `reports/ml_leakage_check.md` — data leakage audit
+- `reports/demand_model_comparison.md` — demand model comparison
+- `reports/stockout_model_comparison.md` — stockout model comparison
+- `reports/demand_feature_importance.csv` — feature importances
+- `reports/stockout_feature_importance.csv` — feature importances
+- `reports/ml_error_analysis.md` — error analysis
+- `reports/person2_handoff.md` — complete handoff to Person 3
+- `notebooks/02_round2_ml.ipynb` — ML documentation notebook
+
