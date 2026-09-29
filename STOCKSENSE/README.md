@@ -159,3 +159,48 @@ python src/train_models.py
 - `reports/person2_handoff.md` — complete handoff to Person 3
 - `notebooks/02_round2_ml.ipynb` — ML documentation notebook
 
+<<<<<<< HEAD
+=======
+## Round 3: Decision Intelligence & Dashboard Prototype
+
+### Running the Dashboard
+To launch the interactive STOCKSENSE decision support dashboard:
+
+```bash
+streamlit run app.py
+```
+
+### Dashboard Capabilities
+1. **Interactive Sidebar Filters**: Store selection, Product catalog, Date range filtering, and Risk level filtering.
+2. **Top Executive KPI Cards**: Total Stores, Total Products, Current Closing Inventory, Units Sold, 7-Day Predicted Demand, and High Risk Items.
+3. **Inventory Overview**:
+   - Total Current Inventory by Store
+   - Inventory by Product with category tags
+   - Daily Sales Trend & 7-Day Moving Average velocity
+   - Top Products by Total Volume Sold
+   - Low Stock Alert (Closing stock vs. Reorder levels)
+4. **Stock-Out Risk & Decision Intelligence**:
+   - Operates in **Data-Exploration Mode** when ML predictions are pending.
+   - Loads the real test-set forecasts from `data/processed/demand_predictions.csv` and `data/processed/stockout_predictions.csv`.
+   - Categorizes risk:
+     - 🔴 **HIGH**: Stock-out probability &ge; 70%
+     - 🟡 **MEDIUM**: Stock-out probability 40% – 69%
+     - 🟢 **LOW**: Stock-out probability &lt; 40%
+   - Visualizes risk distribution, top vulnerable items, store-level risk breakdown, and inventory depth vs. vulnerability scatter plots.
+5. **Explainability Engine ("Why is this item at risk?")**:
+   - Synthesizes factual drivers: low inventory buffers, projected demand surges, sales velocity, short shelf-life perishability, high customer footfall, and external factors (weather, holidays, weekend peaks).
+6. **Actionable Recommendations ("Recommended Action")**:
+   - Provides decision-support guidance (e.g., immediate stock replenishment, proactive restock, active watchlist monitoring, inventory rebalancing).
+7. **Deep Dive Views & Data Explorer**:
+   - Product-level intelligence (MRP, cost, margins, shelf life, demand trends).
+   - Store-level intelligence (format, city, square footage, footfall).
+   - Interactive data table with CSV export.
+
+### ML Forecast Integration
+The dashboard reads these real ML outputs without modifying them:
+- `data/processed/demand_predictions.csv` — keyed by `date`, `store_id`, and `product_id`; demand output is `predicted_next_7_day_demand` (normalized internally to `predicted_7d_demand`).
+- `data/processed/stockout_predictions.csv` — keyed by `date`, `store_id`, and `product_id`; includes `stockout_probability`.
+
+The published demand test forecasts cover 2026-08-13 through 2026-08-24. Dates without a matching demand row remain unavailable; the dashboard does not fabricate demand. Model probability thresholds are HIGH at 70%+, WATCH at 40%+, and SAFE below 40%. When forecast demand exceeds current inventory, a separate stock-versus-demand rule can escalate the action category; that rule does not alter or masquerade as the model probability.
+
+>>>>>>> 6fdba9fc3ce5eb35cbe3e9aaffe8b8c98b275a22
