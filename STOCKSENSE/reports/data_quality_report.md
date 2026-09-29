@@ -1,0 +1,9 @@
+# Data Quality Report
+
+| dataset | issue | column | count | percentage | action_taken | justification |
+| --- | --- | --- | --- | --- | --- | --- |
+| external_factors | Missing values | temp_c | 15 | 3.05 | Imputed with city-month mean | Preserves rows while keeping temperature distribution realistic. |
+| transactions | Duplicate rows | All | 10 | 0.01 | Removed exact duplicates | Ensures no double counting of sales. |
+| products | Category inconsistency | category | 2 | 14.29 | Standardized to Title Case and fixed pluralization | Avoids splitting identical categories during EDA. |
+| transactions | Impossible quantity (<=0) | quantity | 5 | 0.0 | Removed rows with negative or zero quantity | Negative quantities represent invalid data or returns which are not in scope. |
+| inventory | Inventory mismatch | closing | 20 | 0.31 | Recalculated closing = opening + received - sold | Enforces correct inventory arithmetic to avoid downstream errors. |

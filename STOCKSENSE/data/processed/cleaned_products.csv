@@ -1,0 +1,15 @@
+product_id,category,sub_category,brand,mrp,cost_price,shelf_life_days,supplier_id
+P101,Dairy,Milk,Aavin,60,52,3,SUP01
+P102,Dairy,Cheese,MilkyWay,150,110,30,SUP01
+P201,Personal Care,Soap,GlowCare,45,30,730,SUP02
+P205,Personal Care,Shampoo,GlowCare,120,79,730,SUP08
+P330,Beverages,Soft Drink,FizzUp,50,31,180,SUP04
+P331,Beverages,Juice,NatureFresh,90,60,120,SUP04
+P442,Snacks,Biscuits,Crispo,35,22,240,SUP06
+P443,Snacks,Chips,Crunchy,20,12,180,SUP06
+P501,Groceries,Rice,FarmGold,600,500,365,SUP07
+P502,Groceries,Dal,FarmGold,120,95,365,SUP07
+P601,Household,Cleaner,Shine,99,70,730,SUP03
+P701,Frozen,Peas,IceFarm,80,55,180,SUP05
+P702,Frozen,Ice Cream,ChillZ,250,180,90,SUP05
+P999,Beverages,Energy Drink,Zap,110,75,180,SUP04
