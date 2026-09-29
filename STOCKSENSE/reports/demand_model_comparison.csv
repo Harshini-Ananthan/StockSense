@@ -1,0 +1,8 @@
+model,split,MAE,RMSE,MAPE,R2
+Baseline (rolling_mean_7 x7),Test,55.4995,89.6796,13.687,0.9477
+LinearRegression,Validation,29.0448,45.6501,9.774,0.9818
+RandomForest,Validation,26.032,42.7945,8.258,0.984
+XGBoost,Validation,26.134,39.9134,8.2881,0.9861
+LinearRegression,Test,79.9338,135.5238,26.4614,0.8799
+RandomForest,Test,51.8688,89.8411,12.4817,0.9472
+XGBoost,Test,51.9219,90.2022,12.6799,0.9468
